@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile - Student Profiling System</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    @media print {
+      .navbar, .btn, .breadcrumb, footer, .modal, .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: #fff !important;
+      }
+      .card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+      }
+      .tab-pane {
+        display: block !important;
+        opacity: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top no-print">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/faculty.html">
+        <i class="bi bi-mortarboard-fill fs-4"></i>
+        <span>SPS Mentoring</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navLinksList">
+          <li class="nav-item">
+            <a class="nav-link" href="/faculty.html"><i class="bi bi-grid-fill me-1"></i>Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/students.html"><i class="bi bi-people-fill me-1"></i>Manage Students</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-white text-end d-none d-md-block">
+            <div id="userDisplayName" class="fw-semibold small">User</div>
+            <div id="userDisplayRole" class="badge bg-light text-primary py-1 px-2" style="font-size: 0.7rem;">ROLE</div>
+          </div>
+          <button class="btn btn-outline-light btn-sm px-3" onclick="handleLogout()">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container py-4" style="max-width: 1100px;">
+    <!-- Top Breadcrumb & Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2 no-print">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0 small">
+          <li class="breadcrumb-item"><a href="/faculty.html" class="text-decoration-none">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="/students.html" class="text-decoration-none">Students</a></li>
+          <li class="breadcrumb-item active" id="breadcrumbName">Profile</li>
+        </ol>
+      </nav>
+      <div class="d-flex gap-2" id="profileActionButtons">
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3" onclick="window.print()">
+          <i class="bi bi-printer me-1"></i>Print Profile
+        </button>
+        <a href="#" id="editProfileTopBtn" class="btn btn-primary btn-sm px-3 faculty-only d-none">
+          <i class="bi bi-pencil me-1"></i>Edit Profile
+        </a>
+      </div>
+    </div>
+
+    <!-- Profile Header Banner -->
+    <div class="profile-header-banner d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="profile-avatar-circle" id="profileAvatar">S</div>
+        <div>
+          <h3 class="fw-bold mb-1" id="profileFullName">Loading Student Profile...</h3>
+          <div class="d-flex flex-wrap gap-2 align-items-center text-white-50 small">
+            <span class="text-white fw-semibold" id="profileRegNo">-</span> &bull;
+            <span id="profileDeptSec">-</span> &bull;
+            <span id="profileCategoryBadge" class="badge bg-light text-dark">-</span> &bull;
+            <span id="profileCareerGoalBadge" class="badge bg-warning text-dark">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-end d-flex flex-column align-items-end">
+        <div class="small text-white-50">Cumulative CGPA</div>
+        <div class="fs-2 fw-bold text-white" id="profileCgpaVal">-</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs for 11 Profile Sections -->
+    <ul class="nav nav-tabs nav-tabs-custom mb-4 no-print" id="profileTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#tab-personal" type="button" role="tab">
+          <i class="bi bi-person me-1"></i>Personal & Family
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="academics-tab" data-bs-toggle="tab" data-bs-target="#tab-academics" type="button" role="tab">
+          <i class="bi bi-mortarboard me-1"></i>Academics & Semesters
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="arrears-tab" data-bs-toggle="tab" data-bs-target="#tab-arrears" type="button" role="tab">
+          <i class="bi bi-exclamation-triangle me-1"></i>Arrear History
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="technical-tab" data-bs-toggle="tab" data-bs-target="#tab-technical" type="button" role="tab">
+          <i class="bi bi-code-slash me-1"></i>Technical & Projects
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="evaluation-tab" data-bs-toggle="tab" data-bs-target="#tab-evaluation" type="button" role="tab">
+          <i class="bi bi-clipboard2-check me-1"></i>Self-Evaluation
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="career-tab" data-bs-toggle="tab" data-bs-target="#tab-career" type="button" role="tab">
+          <i class="bi bi-compass me-1"></i>Career Goal
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="mentoring-tab" data-bs-toggle="tab" data-bs-target="#tab-mentoring" type="button" role="tab">
+          <i class="bi bi-chat-left-quote me-1"></i>Mentoring
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="profileTabContent">
+      <!-- 1. PERSONAL & FAMILY TAB -->
+      <div class="tab-pane fade show active" id="tab-personal" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <h5 class="fw-bold mb-3 text-primary border-bottom pb-2">
+            <i class="bi bi-person-lines-fill me-2"></i>Personal Details
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="detail-label">Register Number</div>
+              <div class="detail-value fw-bold text-primary" id="viewRegNo">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Full Name</div>
+              <div class="detail-value" id="viewName">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Date of Birth</div>
+              <div class="detail-value" id="viewDob">-</div>
+            </div>
+            <div class="col-md-3">
+              <div class="detail-label">Gender</div>
+              <div class="detail-value" id="viewGender">-</div>
+            </div>
+            <div class="col-md-3">
+              <div class="detail-label">Department & Section</div>
+              <div class="detail-value" id="viewDeptSec">-</div>
+            </div>
+            <div class="col-md-3">
+              <div class="detail-label">Category</div>
+              <div class="detail-value" id="viewCategory">-</div>
+            </div>
+            <div class="col-md-3" id="viewCategoryDetailWrapper">
+              <div class="detail-label" id="viewCategoryDetailLabel">Hostel / Commute</div>
+              <div class="detail-value" id="viewCategoryDetailVal">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Institutional Email</div>
+              <div class="detail-value" id="viewInstEmail">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Personal Email</div>
+              <div class="detail-value" id="viewPersEmail">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Mobile Number</div>
+              <div class="detail-value" id="viewMobile">-</div>
+            </div>
+            <div class="col-12">
+              <div class="detail-label">Residential Address</div>
+              <div class="detail-value" id="viewAddress">-</div>
+            </div>
+          </div>
+
+          <h5 class="fw-bold mt-4 mb-3 text-primary border-bottom pb-2">
+            <i class="bi bi-people-fill me-2"></i>Parent & Family Details
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-6 border-end">
+              <h6 class="fw-bold text-dark mb-2">Father Information</h6>
+              <div class="detail-label">Father's Name</div>
+              <div class="detail-value" id="viewFatherName">-</div>
+              <div class="detail-label">Occupation</div>
+              <div class="detail-value" id="viewFatherOcc">-</div>
+              <div class="detail-label">Annual Income Range</div>
+              <div class="detail-value" id="viewFatherInc">-</div>
+              <div class="detail-label">Mobile Number</div>
+              <div class="detail-value" id="viewFatherMob">-</div>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold text-dark mb-2">Mother Information</h6>
+              <div class="detail-label">Mother's Name</div>
+              <div class="detail-value" id="viewMotherName">-</div>
+              <div class="detail-label">Occupation</div>
+              <div class="detail-value" id="viewMotherOcc">-</div>
+              <div class="detail-label">Annual Income Range</div>
+              <div class="detail-value" id="viewMotherInc">-</div>
+              <div class="detail-label">Mobile Number</div>
+              <div class="detail-value" id="viewMotherMob">-</div>
+            </div>
+            <div class="col-12 mt-3 pt-3 border-top">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="detail-label">Guardian / Emergency Contact</div>
+                  <div class="detail-value" id="viewGuardian">-</div>
+                </div>
+                <div class="col-md-4">
+                  <div class="detail-label">First Generation Graduate</div>
+                  <div class="detail-value" id="viewFirstGrad">-</div>
+                </div>
+                <div class="col-md-4">
+                  <div class="detail-label">Scholarship Received</div>
+                  <div class="detail-value" id="viewScholarship">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ACADEMICS & SEMESTERS TAB -->
+      <div class="tab-pane fade" id="tab-academics" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h5 class="fw-bold text-primary mb-0">
+              <i class="bi bi-journal-check me-2"></i>Semester Academic History
+            </h5>
+            <button type="button" class="btn btn-outline-primary btn-sm faculty-only d-none no-print" data-bs-toggle="modal" data-bs-target="#addSemesterModal">
+              <i class="bi bi-plus-circle me-1"></i>Record Semester
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Semester</th>
+                  <th>SGPA</th>
+                  <th>Cumulative CGPA</th>
+                  <th>Attendance</th>
+                  <th>Arrears</th>
+                  <th>Good Subjects</th>
+                  <th>Achievements</th>
+                  <th class="faculty-only d-none text-end no-print">Action</th>
+                </tr>
+              </thead>
+              <tbody id="viewSemesterTableBody">
+                <tr><td colspan="8" class="text-center py-3 text-muted">No semester records added yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ARREAR HISTORY TAB -->
+      <div class="tab-pane fade" id="tab-arrears" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+            <h5 class="fw-bold text-danger mb-0">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>Arrear & Remedial History
+            </h5>
+            <button type="button" class="btn btn-outline-danger btn-sm faculty-only d-none no-print" data-bs-toggle="modal" data-bs-target="#addArrearModal">
+              <i class="bi bi-plus-circle me-1"></i>Add Arrear Record
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Occurred Sem</th>
+                  <th>Subject Code</th>
+                  <th>Subject Name</th>
+                  <th>Attempts</th>
+                  <th>Status</th>
+                  <th>Cleared In</th>
+                  <th>Remedial Needed</th>
+                  <th>Reason</th>
+                  <th class="faculty-only d-none text-end no-print">Action</th>
+                </tr>
+              </thead>
+              <tbody id="viewArrearTableBody">
+                <tr><td colspan="9" class="text-center py-3 text-muted">No arrears recorded for this student.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. TECHNICAL & PROJECTS TAB -->
+      <div class="tab-pane fade" id="tab-technical" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">
+            <i class="bi bi-code-square me-2"></i>Technical Skills & Domains
+          </h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="detail-label">Programming Languages</div>
+              <div id="viewProgLangs" class="mt-1"></div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-label">Technical Skills & Frameworks</div>
+              <div id="viewTechSkills" class="mt-1"></div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Area of Interest</div>
+              <div class="detail-value" id="viewAreaOfInterest">-</div>
+            </div>
+            <div class="col-md-4">
+              <div class="detail-label">Preferred Technical Domain</div>
+              <div class="detail-value" id="viewPreferredDomain">-</div>
+            </div>
+            <div class="col-md-2">
+              <div class="detail-label">Communication Level</div>
+              <div class="detail-value" id="viewCommLevel">-</div>
+            </div>
+            <div class="col-md-2">
+              <div class="detail-label">Aptitude Level</div>
+              <div class="detail-value" id="viewAptLevel">-</div>
+            </div>
+          </div>
+
+          <!-- Professional Links -->
+          <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Coding Profiles & Links</h6>
+          <div class="row g-3 mb-4" id="viewProfileLinksContainer">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Projects -->
+          <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Projects Completed</h6>
+          <div id="viewProjectsContainer" class="row g-3 mb-4">
+            <div class="col-12 text-muted small">No specific projects uploaded yet.</div>
+          </div>
+
+          <!-- Certifications -->
+          <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Certifications</h6>
+          <div id="viewCertificationsContainer" class="row g-3 mb-4">
+            <div class="col-12 text-muted small">No certifications recorded.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SELF-EVALUATION TAB -->
+      <div class="tab-pane fade" id="tab-evaluation" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">
+            <i class="bi bi-clipboard2-data me-2"></i>Strength & Improvement Analysis
+          </h5>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <h6 class="fw-bold text-success mb-2"><i class="bi bi-check-circle-fill me-1"></i>Student Strengths</h6>
+                <div class="mb-3">
+                  <div class="detail-label">Academic Strengths</div>
+                  <div class="detail-value" id="viewAcadStrengths">-</div>
+                </div>
+                <div class="mb-3">
+                  <div class="detail-label">Technical Strengths</div>
+                  <div class="detail-value" id="viewTechStrengths">-</div>
+                </div>
+                <div>
+                  <div class="detail-label">Communication & Leadership</div>
+                  <div class="detail-value" id="viewCommStrengths">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <h6 class="fw-bold text-danger mb-2"><i class="bi bi-graph-up-arrow me-1"></i>Areas Requiring Development</h6>
+                <div class="mb-3">
+                  <div class="detail-label">General Improvement Areas</div>
+                  <div class="detail-value" id="viewGeneralImprovement">-</div>
+                </div>
+                <div class="mb-3">
+                  <div class="detail-label">Subjects Requiring Support</div>
+                  <div class="detail-value" id="viewSubjectsSupport">-</div>
+                </div>
+                <div>
+                  <div class="detail-label">Technical Skills to Develop</div>
+                  <div class="detail-value" id="viewSkillsToDevelop">-</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="p-3 bg-light rounded border">
+                <h6 class="fw-bold text-dark mb-2"><i class="bi bi-bullseye me-1"></i>Aspirations & Mentor Expectations</h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="detail-label">Short-Term Goal</div>
+                    <div class="detail-value" id="viewShortTermGoal">-</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="detail-label">Long-Term Goal</div>
+                    <div class="detail-value" id="viewLongTermGoal">-</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="detail-label">Support Expected from Mentor</div>
+                    <div class="detail-value" id="viewMentorSupportExp">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. CAREER GOAL TAB -->
+      <div class="tab-pane fade" id="tab-career" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">
+            <i class="bi bi-compass-fill me-2"></i>Final Career Goal: <span id="viewPrimaryGoalName" class="badge bg-primary text-white">-</span>
+          </h5>
+          <div id="viewCareerGoalDetailsContainer">
+            <!-- Dynamic career view populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. MENTORING TAB -->
+      <div class="tab-pane fade" id="tab-mentoring" role="tabpanel">
+        <div class="card card-custom p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">
+            <i class="bi bi-chat-left-text-fill me-2"></i>Academic Mentoring & Faculty Action Plan
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="detail-label">Assigned Faculty Mentor</div>
+              <div class="detail-value fw-bold text-dark" id="viewMentorName">-</div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-label">Action Plan / Cohort Assignment</div>
+              <div class="detail-value" id="viewActionPlan">-</div>
+            </div>
+            <div class="col-12">
+              <div class="detail-label">Mentor Remarks & Progress Observations</div>
+              <div class="p-3 bg-light rounded border detail-value" id="viewMentorRemarks">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Quick Add Semester -->
+  <div class="modal fade" id="addSemesterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-1"></i>Add Semester Record</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="quickAddSemesterForm">
+          <div class="modal-body p-3">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label small">Semester</label>
+                <select id="quickSemNum" class="form-select form-select-sm" required>
+                  ${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}">Semester ${n}</option>`).join('')}
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">Attendance %</label>
+                <input type="number" id="quickSemAtt" class="form-control form-control-sm" min="0" max="100" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">SGPA (0 - 10)</label>
+                <input type="number" id="quickSemSgpa" class="form-control form-control-sm" step="0.01" min="0" max="10" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">Cumulative CGPA</label>
+                <input type="number" id="quickSemCgpa" class="form-control form-control-sm" step="0.01" min="0" max="10" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Good Subjects</label>
+                <input type="text" id="quickSemGood" class="form-control form-control-sm" placeholder="Subjects student performed well in">
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Academic Achievements</label>
+                <input type="text" id="quickSemAchieve" class="form-control form-control-sm" placeholder="Honors, rankings, distinctions">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Semester</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Quick Add Arrear -->
+  <div class="modal fade" id="addArrearModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title fs-6"><i class="bi bi-plus-circle me-1"></i>Add Arrear Record</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="quickAddArrearForm">
+          <div class="modal-body p-3">
+            <div class="row g-2">
+              <div class="col-4">
+                <label class="form-label small">Occurred Sem</label>
+                <select id="quickArrSem" class="form-select form-select-sm" required>
+                  ${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}">Sem ${n}</option>`).join('')}
+                </select>
+              </div>
+              <div class="col-4">
+                <label class="form-label small">Subject Code</label>
+                <input type="text" id="quickArrCode" class="form-control form-control-sm" placeholder="CS3351" required>
+              </div>
+              <div class="col-4">
+                <label class="form-label small">Attempts</label>
+                <input type="number" id="quickArrAttempts" class="form-control form-control-sm" min="1" value="1">
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Subject Name</label>
+                <input type="text" id="quickArrName" class="form-control form-control-sm" placeholder="Data Structures" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">Status</label>
+                <select id="quickArrStatus" class="form-select form-select-sm">
+                  <option value="Pending">Pending</option>
+                  <option value="Cleared">Cleared</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">Remedial Support</label>
+                <select id="quickArrRemedial" class="form-select form-select-sm">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Reason for Difficulty</label>
+                <input type="text" id="quickArrReason" class="form-control form-control-sm" placeholder="e.g. Sickness, lack of practice">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger btn-sm">Save Arrear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-5 no-print">
+    <div class="container">
+      <p class="mb-0">Student Academic Personal and Career Profiling System &bull; byteXL NIMBUS Edition</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/student-profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "name": "student-profiling-system",
+  "version": "1.0.0",
+  "description": "Student Academic Personal and Career Profiling System - Full Stack Web Application for byteXL NIMBUS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [
+    "student-profiling",
+    "academic-mentoring",
+    "career-profiling",
+    "express",
+    "mongodb",
+    "mongoose",
+    "bootstrap5"
+  ],
+  "author": "Antigravity Pair Programmer",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.1.4"
+  }
+}

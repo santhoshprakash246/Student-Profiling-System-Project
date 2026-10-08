@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile Form - Student Profiling System</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/faculty.html">
+        <i class="bi bi-mortarboard-fill fs-4"></i>
+        <span>SPS Faculty Mentoring</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/faculty.html"><i class="bi bi-grid-fill me-1"></i>Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/students.html"><i class="bi bi-people-fill me-1"></i>Manage Students</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/add-student.html"><i class="bi bi-person-plus-fill me-1"></i>Add Student</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-white text-end d-none d-md-block">
+            <div id="userDisplayName" class="fw-semibold small">Faculty User</div>
+            <div id="userDisplayRole" class="badge bg-light text-primary py-1 px-2" style="font-size: 0.7rem;">FACULTY</div>
+          </div>
+          <button class="btn btn-outline-light btn-sm px-3" onclick="handleLogout()">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container py-4" style="max-width: 960px;">
+    <!-- Breadcrumb & Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1 small">
+            <li class="breadcrumb-item"><a href="/faculty.html" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="/students.html" class="text-decoration-none">Students</a></li>
+            <li class="breadcrumb-item active" id="formBreadcrumb">Create Student</li>
+          </ol>
+        </nav>
+        <h4 class="fw-bold mb-0" id="formHeaderTitle">Create Student Profile</h4>
+      </div>
+      <div>
+        <a href="/students.html" class="btn btn-outline-secondary btn-sm px-3">
+          <i class="bi bi-arrow-left me-1"></i>Back to Directory
+        </a>
+      </div>
+    </div>
+
+    <!-- Feedback Message Box -->
+    <div id="formAlertBox" class="alert d-none py-2 small" role="alert"></div>
+
+    <!-- Main Student Form -->
+    <form id="studentForm" novalidate>
+      <div class="card card-custom p-4 shadow-sm mb-4">
+        <!-- 1. PERSONAL DETAILS -->
+        <div class="form-section-title mt-0">
+          <i class="bi bi-person-badge text-primary"></i> 1. Personal Details
+        </div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Register Number <span class="text-danger">*</span></label>
+            <input type="text" id="regNo" class="form-control" placeholder="e.g. 24BCS246" required uppercase>
+            <div class="invalid-feedback">Valid Register Number is required.</div>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label">Student Name <span class="text-danger">*</span></label>
+            <input type="text" id="studentName" class="form-control" placeholder="e.g. Santhosh Prakash" required>
+            <div class="invalid-feedback">Student name is required.</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+            <input type="date" id="dob" class="form-control" required>
+            <div class="invalid-feedback">Date of Birth is required.</div>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Gender <span class="text-danger">*</span></label>
+            <select id="gender" class="form-select" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Department <span class="text-danger">*</span></label>
+            <select id="department" class="form-select" required>
+              <option value="">Select Department</option>
+              <option value="CSE">CSE</option>
+              <option value="IT">IT</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="AI&DS">AI&DS</option>
+              <option value="CSBS">CSBS</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Section <span class="text-danger">*</span></label>
+            <input type="text" id="section" class="form-control" placeholder="e.g. A, B" required maxlength="2">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Student Category <span class="text-danger">*</span></label>
+            <select id="category" class="form-select" required>
+              <option value="Hosteller">Hosteller</option>
+              <option value="Day Scholar">Day Scholar</option>
+            </select>
+          </div>
+
+          <!-- Conditional Category Fields -->
+          <div class="col-md-6" id="hostelFieldContainer">
+            <label class="form-label">Hostel Name & Room <span class="text-danger">*</span></label>
+            <input type="text" id="hostelName" class="form-control" placeholder="e.g. Kaveri Hostel, Room 304">
+            <div class="invalid-feedback">Hostel name is required for Hostellers.</div>
+          </div>
+          <div class="col-md-6 d-none" id="dayScholarFieldContainer">
+            <label class="form-label">Distance from Residence to College (km) <span class="text-danger">*</span></label>
+            <input type="number" id="dayScholarDistance" class="form-control" placeholder="e.g. 12" min="0" step="0.5">
+            <div class="invalid-feedback">Distance is required for Day Scholars.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Institutional Email <span class="text-danger">*</span></label>
+            <input type="email" id="institutionalEmail" class="form-control" placeholder="name.reg@bytexl.edu.in" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Personal Email <span class="text-danger">*</span></label>
+            <input type="email" id="personalEmail" class="form-control" placeholder="name@gmail.com" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Mobile Number (10 Digits) <span class="text-danger">*</span></label>
+            <input type="tel" id="mobile" class="form-control" placeholder="e.g. 9840123456" pattern="[0-9]{10}" required maxlength="10">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Residential Address <span class="text-danger">*</span></label>
+            <textarea id="address" class="form-control" rows="2" placeholder="Full residential door no, street, city, pin code" required></textarea>
+          </div>
+        </div>
+
+        <!-- 2. PARENT AND FAMILY DETAILS -->
+        <div class="form-section-title">
+          <i class="bi bi-people text-primary"></i> 2. Parent & Family Details
+        </div>
+        <div class="row g-3">
+          <!-- Father -->
+          <div class="col-md-3">
+            <label class="form-label">Father's Name</label>
+            <input type="text" id="fatherName" class="form-control" placeholder="Father name">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Father's Occupation</label>
+            <input type="text" id="fatherOccupation" class="form-control" placeholder="Occupation">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Father's Annual Income Range</label>
+            <select id="fatherIncome" class="form-select">
+              <option value="">Select Range</option>
+              <option value="Below ₹1,00,000">Below ₹1,00,000</option>
+              <option value="₹1,00,000 - ₹3,00,000">₹1,00,000 - ₹3,00,000</option>
+              <option value="₹3,00,000 - ₹6,00,000">₹3,00,000 - ₹6,00,000</option>
+              <option value="₹6,00,000 - ₹10,00,000">₹6,00,000 - ₹10,00,000</option>
+              <option value="Above ₹10,00,000">Above ₹10,00,000</option>
+              <option value="Not Disclosed">Not Disclosed</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Father's Mobile</label>
+            <input type="tel" id="fatherMobile" class="form-control" placeholder="10-digit number" maxlength="10">
+          </div>
+
+          <!-- Mother -->
+          <div class="col-md-3">
+            <label class="form-label">Mother's Name</label>
+            <input type="text" id="motherName" class="form-control" placeholder="Mother name">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Mother's Occupation</label>
+            <input type="text" id="motherOccupation" class="form-control" placeholder="Occupation">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Mother's Annual Income Range</label>
+            <select id="motherIncome" class="form-select">
+              <option value="">Select Range</option>
+              <option value="Below ₹1,00,000">Below ₹1,00,000</option>
+              <option value="₹1,00,000 - ₹3,00,000">₹1,00,000 - ₹3,00,000</option>
+              <option value="₹3,00,000 - ₹6,00,000">₹3,00,000 - ₹6,00,000</option>
+              <option value="₹6,00,000 - ₹10,00,000">₹6,00,000 - ₹10,00,000</option>
+              <option value="Above ₹10,00,000">Above ₹10,00,000</option>
+              <option value="Not Disclosed">Not Disclosed</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Mother's Mobile</label>
+            <input type="tel" id="motherMobile" class="form-control" placeholder="10-digit number" maxlength="10">
+          </div>
+
+          <!-- Guardian / Emergency -->
+          <div class="col-md-6">
+            <label class="form-label">Parent / Guardian Name</label>
+            <input type="text" id="guardianName" class="form-control" placeholder="Guardian name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Emergency Contact Number</label>
+            <input type="tel" id="guardianContact" class="form-control" placeholder="Emergency contact" maxlength="10">
+          </div>
+
+          <!-- Additional Family Info -->
+          <div class="col-md-4">
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" type="checkbox" id="isFirstGraduate">
+              <label class="form-check-label" for="isFirstGraduate">First-generation Graduate</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" type="checkbox" id="scholarshipReceived">
+              <label class="form-check-label" for="scholarshipReceived">Scholarship Received</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" type="checkbox" id="financialGuidanceRequired">
+              <label class="form-check-label" for="financialGuidanceRequired">Financial / Scholarship Guidance Needed</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. DYNAMIC SEMESTER-WISE ACADEMIC DETAILS -->
+        <div class="form-section-title">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <span><i class="bi bi-mortarboard text-primary"></i> 3. Semester Academic History</span>
+            <button type="button" id="addSemesterRowBtn" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-plus-lg me-1"></i>Add Semester
+            </button>
+          </div>
+        </div>
+        <p class="small text-muted mb-2">Record semester-wise SGPA, CGPA, Attendance, and Performance indicators:</p>
+        <div id="semesterRowsContainer">
+          <!-- Dynamic semester blocks rendered by JS -->
+        </div>
+
+        <!-- 4. DYNAMIC ARREAR MANAGEMENT -->
+        <div class="form-section-title">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <span><i class="bi bi-exclamation-triangle text-danger"></i> 4. Arrear Management</span>
+            <button type="button" id="addArrearRowBtn" class="btn btn-outline-danger btn-sm">
+              <i class="bi bi-plus-lg me-1"></i>Add Arrear Record
+            </button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Does the student have any active or cleared arrear history?</label>
+          <div class="d-flex gap-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="arrearStatusRadio" id="arrearStatusNo" value="No" checked>
+              <label class="form-check-label" for="arrearStatusNo">No Arrears</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="arrearStatusRadio" id="arrearStatusYes" value="Yes">
+              <label class="form-check-label" for="arrearStatusYes">Yes (Has Arrears History)</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="arrearRowsContainer" class="d-none">
+          <!-- Dynamic arrear cards rendered by JS -->
+        </div>
+
+        <!-- 5. TECHNICAL AND PROFESSIONAL PROFILE -->
+        <div class="form-section-title">
+          <i class="bi bi-code-slash text-primary"></i> 5. Technical & Professional Profile
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Programming Languages (Comma separated)</label>
+            <input type="text" id="programmingLanguages" class="form-control" placeholder="e.g. JavaScript, Python, C++, Java">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Technical Skills (Comma separated)</label>
+            <input type="text" id="technicalSkills" class="form-control" placeholder="e.g. React.js, Express, MongoDB, Docker, Git">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Area of Interest</label>
+            <input type="text" id="areaOfInterest" class="form-control" placeholder="e.g. Full Stack Web Development, Embedded IoT">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Preferred Technical Domain</label>
+            <input type="text" id="preferredDomain" class="form-control" placeholder="e.g. Cloud Computing, AI/ML, Automotive Systems">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Communication Skill Level</label>
+            <select id="communicationSkill" class="form-select">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate" selected>Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Aptitude Skill Level</label>
+            <select id="aptitudeSkill" class="form-select">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate" selected>Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Coding Contests / Platform Ratings</label>
+            <input type="text" id="codingContests" class="form-control" placeholder="e.g. LeetCode 300+ solved, CodeChef 3-Star">
+          </div>
+
+          <!-- Professional Links -->
+          <div class="col-md-3">
+            <label class="form-label"><i class="bi bi-github me-1"></i>GitHub Profile</label>
+            <input type="url" id="githubUrl" class="form-control" placeholder="https://github.com/username">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label"><i class="bi bi-linkedin me-1 text-primary"></i>LinkedIn Profile</label>
+            <input type="url" id="linkedinUrl" class="form-control" placeholder="https://linkedin.com/in/username">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">HackerRank Profile</label>
+            <input type="url" id="hackerrankUrl" class="form-control" placeholder="https://hackerrank.com/username">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">HackerEarth Profile</label>
+            <input type="url" id="hackerearthUrl" class="form-control" placeholder="https://hackerearth.com/@username">
+          </div>
+        </div>
+
+        <!-- 6. STRENGTH AND IMPROVEMENT ANALYSIS (SELF-EVALUATION) -->
+        <div class="form-section-title">
+          <i class="bi bi-clipboard2-check text-primary"></i> 6. Strength & Improvement Analysis (Self-Evaluation)
+        </div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Academic Strengths</label>
+            <textarea id="academicStrengths" class="form-control" rows="2" placeholder="e.g. Algorithmic problem solving, mathematics"></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Technical Strengths</label>
+            <textarea id="technicalStrengths" class="form-control" rows="2" placeholder="e.g. Web frontend, fast debugging, API building"></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Communication & Leadership</label>
+            <textarea id="communicationStrengths" class="form-control" rows="2" placeholder="e.g. Team leadership, technical presentations"></textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Areas Requiring Improvement</label>
+            <textarea id="areasRequiringImprovement" class="form-control" rows="2" placeholder="Key weakness areas"></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Subjects Requiring Additional Support</label>
+            <textarea id="subjectsRequiringSupport" class="form-control" rows="2" placeholder="Subjects where remedial guidance is needed"></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Technical Skills to be Developed</label>
+            <textarea id="technicalSkillsToDevelop" class="form-control" rows="2" placeholder="e.g. Docker, System Design, Cloud"></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Support Expected from Mentor</label>
+            <input type="text" id="mentorSupportExpected" class="form-control" placeholder="e.g. Mock interviews, research recommendation, referral">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Short-Term Goal</label>
+            <input type="text" id="shortTermGoal" class="form-control" placeholder="Goal for current semester">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Long-Term Goal</label>
+            <input type="text" id="longTermGoal" class="form-control" placeholder="Goal after graduation">
+          </div>
+        </div>
+
+        <!-- 7. FINAL CAREER GOAL -->
+        <div class="form-section-title">
+          <i class="bi bi-compass text-primary"></i> 7. Final Career Goal (Select One Primary Goal)
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Primary Career Direction <span class="text-danger">*</span></label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="careerGoalRadio" id="goalPlacement" value="Placement" checked>
+              <label class="form-check-label fw-semibold" for="goalPlacement"><i class="bi bi-briefcase text-primary me-1"></i>Placement</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="careerGoalRadio" id="goalHigherStudies" value="Higher Studies">
+              <label class="form-check-label fw-semibold" for="goalHigherStudies"><i class="bi bi-mortarboard text-purple me-1"></i>Higher Studies</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="careerGoalRadio" id="goalEntrepreneurship" value="Entrepreneurship">
+              <label class="form-check-label fw-semibold" for="goalEntrepreneurship"><i class="bi bi-rocket-takeoff text-warning me-1"></i>Entrepreneurship</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Career Fields 10A: Placement -->
+        <div id="placementContainer" class="p-3 bg-light rounded border mb-3">
+          <h6 class="fw-bold text-primary mb-3"><i class="bi bi-building me-1"></i>Placement Preferences</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Preferred Job Role</label>
+              <input type="text" id="placementRole" class="form-control" placeholder="e.g. Software Development Engineer (SDE-1)">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Preferred Technical Domain</label>
+              <input type="text" id="placementDomain" class="form-control" placeholder="e.g. Cloud Native Web, AI Systems">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Company Type</label>
+              <select id="placementCompanyType" class="form-select">
+                <option value="">Select Type</option>
+                <option value="Product">Product</option>
+                <option value="Service">Service</option>
+                <option value="Core">Core Engineering</option>
+                <option value="Start-up">Start-up</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Expected Salary Range</label>
+              <input type="text" id="placementSalary" class="form-control" placeholder="e.g. ₹8,00,000 - ₹12,00,000">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Preferred Location</label>
+              <input type="text" id="placementLocation" class="form-control" placeholder="e.g. Bengaluru / Chennai / Hyderabad">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Target Companies</label>
+              <input type="text" id="placementTargetCompanies" class="form-control" placeholder="e.g. Amazon, Zoho, Microsoft, TCS">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Training Support Required</label>
+              <input type="text" id="placementTrainingSupport" class="form-control" placeholder="e.g. Mock Technical Interviews, DSA Bootcamp">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Skills to Improve</label>
+              <input type="text" id="placementSkillsToImprove" class="form-control" placeholder="e.g. Dynamic Programming, System Design">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Career Fields 10B: Higher Studies -->
+        <div id="higherStudiesContainer" class="p-3 bg-light rounded border mb-3 d-none">
+          <h6 class="fw-bold text-purple mb-3"><i class="bi bi-book me-1"></i>Higher Studies Preferences</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Preferred Programme</label>
+              <input type="text" id="higherProg" class="form-control" placeholder="e.g. MS in Computer Science, MBA">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Specialization</label>
+              <input type="text" id="higherSpec" class="form-control" placeholder="e.g. Artificial Intelligence, Data Science">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Preferred Country</label>
+              <input type="text" id="higherCountry" class="form-control" placeholder="e.g. USA, Germany, India, Singapore">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Target Institutions</label>
+              <input type="text" id="higherInstitutions" class="form-control" placeholder="e.g. IITs, CMU, Georgia Tech, TU Munich">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Planned Examination</label>
+              <select id="higherExam" class="form-select">
+                <option value="">Select Exam</option>
+                <option value="GATE">GATE</option>
+                <option value="GRE">GRE</option>
+                <option value="IELTS">IELTS</option>
+                <option value="TOEFL">TOEFL</option>
+                <option value="CAT">CAT</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Expected Admission Year</label>
+              <input type="number" id="higherYear" class="form-control" placeholder="e.g. 2026" min="2024" max="2035">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Guidance Required</label>
+              <input type="text" id="higherGuidance" class="form-control" placeholder="e.g. SOP drafting, Letter of Recommendation, Professor outreach">
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Career Fields 10C: Entrepreneurship -->
+        <div id="entrepreneurshipContainer" class="p-3 bg-light rounded border mb-3 d-none">
+          <h6 class="fw-bold text-warning mb-3"><i class="bi bi-lightbulb me-1"></i>Entrepreneurship & Startup Preferences</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Business / Start-up Idea Title</label>
+              <input type="text" id="entIdea" class="form-control" placeholder="e.g. TexFlow - Supply Chain SaaS for MSMEs">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Current Stage</label>
+              <select id="entStage" class="form-select">
+                <option value="">Select Stage</option>
+                <option value="Idea">Idea</option>
+                <option value="Prototype">Prototype</option>
+                <option value="MVP">MVP</option>
+                <option value="Revenue">Revenue</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Problem Addressed</label>
+              <textarea id="entProblem" class="form-control" rows="2" placeholder="What pain point is being solved?"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Proposed Solution</label>
+              <textarea id="entSolution" class="form-control" rows="2" placeholder="Product or service overview"></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Target Customers</label>
+              <input type="text" id="entCustomers" class="form-control" placeholder="e.g. Local textile exporters">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Team Information</label>
+              <input type="text" id="entTeam" class="form-control" placeholder="e.g. 3 members (2 developers, 1 UI)">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Technology Stack</label>
+              <input type="text" id="entTech" class="form-control" placeholder="e.g. Flutter, Node.js, PostgreSQL">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Funding Support</label>
+              <input type="text" id="entFunding" class="form-control" placeholder="e.g. Seeking ₹5L grant">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Incubation Support</label>
+              <input type="text" id="entIncubation" class="form-control" placeholder="e.g. College Incubator space">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Expected Launch Year</label>
+              <input type="number" id="entLaunchYear" class="form-control" placeholder="e.g. 2025" min="2024" max="2035">
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. MENTOR REMARKS -->
+        <div class="form-section-title">
+          <i class="bi bi-chat-left-quote text-primary"></i> 8. Mentoring / Faculty Notes
+        </div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Mentor Name</label>
+            <input type="text" id="mentorName" class="form-control" placeholder="e.g. Dr. K. Arul Murugan">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Mentor Remarks / Assessment</label>
+            <input type="text" id="mentorRemarks" class="form-control" placeholder="Confidential faculty assessment">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Development Action Plan</label>
+            <input type="text" id="actionPlan" class="form-control" placeholder="Intervention or cohort assignment">
+          </div>
+        </div>
+
+        <!-- Submit Button Bar -->
+        <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+          <a href="/students.html" class="btn btn-outline-secondary px-4">Cancel</a>
+          <button type="submit" id="saveStudentBtn" class="btn btn-primary px-4 fw-semibold">
+            <i class="bi bi-check2-circle me-1"></i>Save Student Profile
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-5">
+    <div class="container">
+      <p class="mb-0">Student Academic Personal and Career Profiling System &bull; byteXL NIMBUS Edition</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/add-student.js"></script>
+</body>
+</html>
