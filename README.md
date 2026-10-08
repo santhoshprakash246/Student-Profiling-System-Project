@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Student Academic Personal and Career Profiling System
 
 An enterprise-grade, full-stack academic and mentoring web application designed for institutions and runnable in the **byteXL NIMBUS** environment. The system maintains comprehensive student personal, family, semester-wise academic, technical, self-evaluation, and career-goal profiles to empower authorized mentors and faculty in guiding student progression.
@@ -261,3 +262,6 @@ The server will start at: `http://localhost:3000`
 - [x] **Search & Multi-Filter:** Searching by name and register number, filtering by department, category, career goal, and arrear status.
 - [x] **Live Dashboard Analytics:** Real calculation of average CGPA, SGPA trend line, career doughnut chart, and arrear statistics.
 - [x] **Validation:** Valid Indian mobile number (10 digits), valid institutional email, CGPA/SGPA limits (0 to 10), and attendance limits (0 to 100%).
+=======
+# Student-Profiling-System-Project
+>>>>>>> 50aa023028551a38096e15c67490e75eb9da35b6
